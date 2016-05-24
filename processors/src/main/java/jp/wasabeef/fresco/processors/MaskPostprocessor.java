@@ -18,11 +18,16 @@ package jp.wasabeef.fresco.processors;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.util.Log;
+import android.widget.ImageView;
+
 import com.facebook.cache.common.CacheKey;
 import com.facebook.cache.common.SimpleCacheKey;
 import com.facebook.imagepipeline.request.BasePostprocessor;
@@ -53,13 +58,14 @@ public class MaskPostprocessor extends BasePostprocessor {
     Bitmap result =
         Bitmap.createBitmap(source.getWidth(), source.getHeight(), Bitmap.Config.ARGB_8888);
 
-    Drawable mask = Utils.getMaskDrawable(context, maskId);
+    Drawable mask = getMaskDrawable(context, maskId);
+    Log.e("suiyue", context.getPackageName());
 
     Canvas canvas = new Canvas(result);
     mask.setBounds(0, 0, source.getWidth(), source.getHeight());
     mask.draw(canvas);
     canvas.drawBitmap(source, 0, 0, paint);
-
+    dest.setHasAlpha(true);
     super.process(dest, result);
   }
 
@@ -69,5 +75,19 @@ public class MaskPostprocessor extends BasePostprocessor {
 
   @Override public CacheKey getPostprocessorCacheKey() {
     return new SimpleCacheKey("mask=" + context.getResources().getResourceEntryName(maskId));
+  }
+  public static Drawable getMaskDrawable(Context context, int maskId) {
+    Drawable drawable;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      drawable = context.getDrawable(maskId);
+    } else {
+      drawable = context.getResources().getDrawable(maskId);
+    }
+
+    if (drawable == null) {
+      throw new IllegalArgumentException("maskId is invalid");
+    }
+
+    return drawable;
   }
 }

@@ -88,7 +88,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
     switch (dataSet.get(position)) {
       case Mask: {
-        processor = new MaskPostprocessor(context, R.drawable.mask_starfish);
+        processor = new MaskPostprocessor(this.context, R.drawable.polygon);
         holder.drawee.getHierarchy().setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER);
         break;
       }
