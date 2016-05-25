@@ -1,1 +1,1 @@
-include ':example', ':processors'
+include ':example', ':processors', ':polygonimageview'
